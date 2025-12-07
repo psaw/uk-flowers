@@ -1,0 +1,7 @@
+[core]
+    analytics = false
+    remote = uk-flowers
+['remote "uk-flowers"']
+    url = s3://uk-flowers-ai24/data
+    endpointurl = https://storage.yandexcloud.net
+    credentialpath = ~/.aws/uk-flowers
