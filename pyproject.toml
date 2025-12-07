@@ -46,7 +46,12 @@ check = [
 ]
 commit = ["commitizen>=4.4.1", "pre-commit>=4.1.0"]
 data = ["dvc>=3.64.2"]
-dev = ["rust-just>=1.39.0"]
+dev = [
+    "rust-just>=1.39.0",
+    "torch>=2.9.1",
+    "torchinfo>=1.8.0",
+    "torchvision>=0.24.1",
+]
 doc = ["pdoc>=15.0.1"]
 notebook = ["ipykernel>=6.29.5", "nbformat>=5.10.4"]
 
