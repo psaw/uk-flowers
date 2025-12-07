@@ -1,0 +1,6 @@
+outs:
+- md5: d1dd5eabb69431501464bd62f2cff2dc.dir
+  size: 346828814
+  nfiles: 8192
+  hash: md5
+  path: flower_data
