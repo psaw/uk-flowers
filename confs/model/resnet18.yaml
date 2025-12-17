@@ -1,0 +1,4 @@
+arch: "resnet18"
+num_classes: 102
+pretrained: true
+freeze_backbone: true # Initial training phase freezes backbone

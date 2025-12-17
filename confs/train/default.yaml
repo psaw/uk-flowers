@@ -1,0 +1,13 @@
+epochs: 3
+base_save_dir: "./outputs/checkpoints"
+save_dir: "${train.base_save_dir}/${now:%Y-%m-%d}/${now:%H-%M-%S}"
+
+optimizer:
+  name: "adamw"
+  lr: 0.01
+  momentum: 0.9
+  weight_decay: 0.0001
+  lookahead:
+    enabled: false
+    alpha: 0.5
+    k: 5

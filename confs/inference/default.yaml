@@ -1,0 +1,4 @@
+checkpoint_path: null # Path to the checkpoint file (e.g. outputs/checkpoints/...)
+image_path: null # Path to the image or directory of images to infer
+# image_path: "./data/flower_data/dataset/test/image_00260.jpg" # Path to the image or directory of images to infer
+output_path: "inference_results.json"
