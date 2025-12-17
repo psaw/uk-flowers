@@ -11,4 +11,4 @@ project-requirements:
 # run project job with a config
 [group('project')]
 project-run job:
-    uv run {{REPOSITORY}} confs/{job}.yaml
+    uv run {{REPOSITORY}} confs/{{job}}.yaml

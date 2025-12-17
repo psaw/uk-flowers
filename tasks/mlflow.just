@@ -9,5 +9,5 @@ mlflow-doctor:
 
 # start mlflow server
 [group('mlflow')]
-mlflow-serve host="127.0.0.1" port="5000" uri="./mlruns":
+mlflow-serve host="127.0.0.1" port="8080" uri="./mlruns":
     uv run mlflow server --host={{host}} --port={{port}} --backend-store-uri={{uri}}
