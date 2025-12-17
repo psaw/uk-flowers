@@ -5,7 +5,7 @@
 
 [project]
 name = "uk-flowers"
-version = "0.1.1"
+version = "0.2.0"
 description = "UK flowers classification with neural networks"
 authors = [{ name = "psaw" }]
 readme = "README.md"
@@ -78,7 +78,7 @@ targets = ["src"]
 name = "cz_conventional_commits"
 tag_format = "v$version"
 version_scheme = "pep440"
-version_provider = "pep621"
+version_provider = "uv"
 update_changelog_on_bump = true
 
 [tool.coverage.run]
