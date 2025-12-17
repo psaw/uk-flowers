@@ -20,6 +20,10 @@ def infer(cfg: DictConfig) -> None:
     inference_cfg = cfg.get("inference", {})
     checkpoint_path_str = inference_cfg.get("checkpoint_path")
 
+    image_path_str = inference_cfg.get("image_path")
+    if not image_path_str:
+        raise ValueError("Option cfg.inference.image_path must be provided.")
+
     if not checkpoint_path_str:
         # Try to find the best checkpoint in the base save directory
         # We use cfg.train.base_save_dir which is static, unlike save_dir which has timestamps
@@ -69,12 +73,7 @@ def infer(cfg: DictConfig) -> None:
     )
 
     # Load image(s)
-    image_path_str = inference_cfg.get("image_path")
-    if not image_path_str:
-        raise ValueError("cfg.inference.image_path must be provided")
-
     image_path = Path(image_path_str)
-
     if image_path.is_dir():
         image_paths = list(image_path.rglob("*.jpg"))
     else:
@@ -106,25 +105,18 @@ def infer(cfg: DictConfig) -> None:
                 predicted_idx = top_class.item()
                 predicted_prob = top_prob.item()
 
-                # Map index to class name
-                # Note: The model output index corresponds to the sorted class folders (1...102)
-                # cat_to_name maps "1" -> "pink primrose"
-                # We assume the model's class index i corresponds to folder name str(i+1) if 0-indexed
-                # But ImageFolder sorts classes. If folders are 1, 10, 100... sorting might be tricky.
-                # Ideally we should save class_to_idx from training.
-                # For this dataset, folders are integers.
-
-                # Let's try to map directly if possible, or just output index
-                class_name = cat_to_name.get(str(predicted_idx), "Unknown")
+                # +1 because logits are 0-indexed, while class names are 1-indexed
+                class_name = cat_to_name.get(str(predicted_idx + 1), "Unknown")
+                # print(f"[DEBUG]: predicted_idx = {predicted_idx}, class_name = {class_name}, ")
 
                 results[str(img_p)] = {
-                    "class_idx": predicted_idx,
+                    "class_idx": predicted_idx + 1,
                     "class_name": class_name,
                     "probability": predicted_prob,
                 }
 
                 print(
-                    f"Image: {img_p.name}, Class: {class_name} ({predicted_idx}), Prob: {predicted_prob:.4f}"
+                    f"Image: {img_p.name}, Class: {class_name} ({predicted_idx + 1}), Prob: {predicted_prob:.4f}"
                 )
 
         except Exception as e:

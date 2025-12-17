@@ -2,6 +2,7 @@
 
 # %% IMPORTS
 
+import sys
 import fire
 import hydra
 
@@ -47,7 +48,13 @@ def run_infer(overrides: list[str] | None = None) -> None:
             overrides = list(overrides)
 
         cfg = hydra.compose(config_name="config", overrides=overrides or [])
-        infer(cfg)
+        try:
+            infer(cfg)
+        except ValueError as e:
+            if "cfg.inference.image_path must be provided" in str(e):
+                print(f"Error: {e}", file=sys.stderr)
+                sys.exit(1)
+            raise
 
 
 def main() -> None:
