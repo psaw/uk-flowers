@@ -1,3 +1,9 @@
+## v0.2.1 (2025-12-17)
+
+### Fix
+
+- **infer**: fixed exception handling when no `cfg.inference.image_path` provided
+
 ## v0.2.0 (2025-12-17)
 
 ### Feat
