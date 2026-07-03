@@ -5,7 +5,7 @@ default_language_version:
   python: python3.13
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
   - id: check-added-large-files
     args: ['--maxkb=1000']
@@ -19,18 +19,18 @@ repos:
   - id: mixed-line-ending
   - id: trailing-whitespace
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.9.9
+  rev: v0.15.20
   hooks:
   - id: ruff
   - id: ruff-format
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.18.2
+  rev: v2.1.0
   hooks:
   - id: mypy
     args: [--config-file=pyproject.toml]
     types: [python]
 - repo: https://github.com/PyCQA/bandit
-  rev: 1.8.3
+  rev: 1.9.4
   hooks:
   - id: bandit
   # - repo: https://github.com/commitizen-tools/commitizen
@@ -40,7 +40,7 @@ repos:
   #     - id: commitizen-branch
   #       stages: [pre-push]
 - repo: https://github.com/treeverse/dvc
-  rev: 3.64.2
+  rev: 3.67.1
   hooks:
   - id: dvc-pre-commit
     additional_dependencies:
