@@ -1,3 +1,9 @@
+## v0.2.2 (2026-07-03)
+
+### Fix
+
+- **ci**: update pre-commit hooks to latest versions
+
 ## v0.2.1 (2025-12-17)
 
 ### Fix
