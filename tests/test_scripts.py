@@ -2,6 +2,7 @@
 
 import sys
 from unittest import mock
+from pathlib import Path
 
 import pytest
 from omegaconf import DictConfig
@@ -49,12 +50,13 @@ def test_main_dispatches_train_command_with_overrides() -> None:
     assert cfg.project.seed == 42
 
 
-def test_main_dispatches_infer_command_with_overrides() -> None:
+def test_main_dispatches_infer_command_with_overrides(tmp_path: Path) -> None:
     # given
+    image_path = tmp_path / "photo.jpg"
     with (
         mock.patch("uk_flowers.scripts.infer") as mock_infer,
         mock.patch.object(
-            sys, "argv", ["uk-flowers", "infer", "inference.image_path=/tmp/photo.jpg"]
+            sys, "argv", ["uk-flowers", "infer", f"inference.image_path={image_path}"]
         ),
     ):
         # when
@@ -62,7 +64,7 @@ def test_main_dispatches_infer_command_with_overrides() -> None:
     # then
     mock_infer.assert_called_once()
     cfg = _captured_cfg(mock_infer.call_args.args)
-    assert cfg.inference.image_path == "/tmp/photo.jpg"
+    assert Path(cfg.inference.image_path) == image_path
 
 
 def test_run_train_passes_hydra_overrides_to_train() -> None:
@@ -79,17 +81,19 @@ def test_run_train_passes_hydra_overrides_to_train() -> None:
     assert cfg.model.pretrained is False
 
 
-def test_run_infer_passes_hydra_overrides_to_infer() -> None:
+def test_run_infer_passes_hydra_overrides_to_infer(tmp_path: Path) -> None:
     # given
-    overrides = ["inference.image_path=/tmp/photo.jpg", "inference.output_path=/tmp/result.json"]
+    image_path = tmp_path / "photo.jpg"
+    output_path = tmp_path / "result.json"
+    overrides = [f"inference.image_path={image_path}", f"inference.output_path={output_path}"]
     with mock.patch("uk_flowers.scripts.infer") as mock_infer:
         # when
         scripts.run_infer(overrides)
     # then
     mock_infer.assert_called_once()
     cfg = _captured_cfg(mock_infer.call_args.args)
-    assert cfg.inference.image_path == "/tmp/photo.jpg"
-    assert cfg.inference.output_path == "/tmp/result.json"
+    assert Path(cfg.inference.image_path) == image_path
+    assert Path(cfg.inference.output_path) == output_path
 
 
 def test_run_infer_reports_missing_image_path_and_exits(capsys: pytest.CaptureFixture[str]) -> None:
