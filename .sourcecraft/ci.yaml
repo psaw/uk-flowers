@@ -14,10 +14,15 @@ workflows:
       - name: python-checks
         cubes:
           - name: bootstrap-and-verify
-            image: docker.io/library/python:3.13-slim-bookworm
             script:
-              - python -m pip install --no-cache-dir uv==0.13.1
-              - bash scripts/pilot-check.sh all
+              - |
+                set -eu
+                mkdir -p .cache
+                curl -fsSL https://astral.sh/uv/0.13.1/install.sh -o .cache/install-uv.sh
+                UV_INSTALL_DIR="$PWD/.cache/uv-bin" UV_NO_MODIFY_PATH=1 sh .cache/install-uv.sh
+                export PATH="$PWD/.cache/uv-bin:$PATH"
+                export UV_PYTHON_INSTALL_DIR="$PWD/.cache/python"
+                bash scripts/pilot-check.sh all
             artifacts:
               paths:
                 - reports/pilot
