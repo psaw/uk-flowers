@@ -4,10 +4,34 @@ import sys
 from unittest import mock
 
 import pytest
+from omegaconf import DictConfig
 
 from uk_flowers import scripts
 
 # %% FUNCTIONS
+
+
+def _captured_cfg(positional_args: tuple[object, ...]) -> DictConfig:
+    """
+    Extract the composed Hydra config from a mocked pipeline call.
+
+    `scripts.run_train`/`scripts.run_infer` call ``train(cfg)``/``infer(cfg)``
+    (see `uk_flowers/scripts.py`); the imported signatures are
+    ``train(cfg: DictConfig) -> None`` and ``infer(cfg: DictConfig) -> None``
+    (see `uk_flowers/train.py` and `uk_flowers/infer.py`). Hence the single
+    positional argument of the call is the `DictConfig` composed by
+    ``hydra.compose``.
+
+    Args:
+        positional_args: Positional arguments of the mocked call.
+
+    Returns:
+        The composed Hydra configuration.
+    """
+    assert len(positional_args) == 1, "Expected exactly one positional argument (the cfg)."
+    cfg = positional_args[0]
+    assert isinstance(cfg, DictConfig), "The first positional argument must be the Hydra cfg."
+    return cfg
 
 
 def test_main_dispatches_train_command_with_overrides() -> None:
@@ -20,7 +44,7 @@ def test_main_dispatches_train_command_with_overrides() -> None:
         scripts.main()
     # then
     mock_train.assert_called_once()
-    cfg = mock_train.call_args.args[0]
+    cfg = _captured_cfg(mock_train.call_args.args)
     assert cfg.train.epochs == 7
     assert cfg.project.seed == 42
 
@@ -37,7 +61,7 @@ def test_main_dispatches_infer_command_with_overrides() -> None:
         scripts.main()
     # then
     mock_infer.assert_called_once()
-    cfg = mock_infer.call_args.args[0]
+    cfg = _captured_cfg(mock_infer.call_args.args)
     assert cfg.inference.image_path == "/tmp/photo.jpg"
 
 
@@ -49,7 +73,7 @@ def test_run_train_passes_hydra_overrides_to_train() -> None:
         scripts.run_train(overrides)
     # then
     mock_train.assert_called_once()
-    cfg = mock_train.call_args.args[0]
+    cfg = _captured_cfg(mock_train.call_args.args)
     assert cfg.train.epochs == 3
     assert cfg.project.seed == 7
     assert cfg.model.pretrained is False
@@ -63,7 +87,7 @@ def test_run_infer_passes_hydra_overrides_to_infer() -> None:
         scripts.run_infer(overrides)
     # then
     mock_infer.assert_called_once()
-    cfg = mock_infer.call_args.args[0]
+    cfg = _captured_cfg(mock_infer.call_args.args)
     assert cfg.inference.image_path == "/tmp/photo.jpg"
     assert cfg.inference.output_path == "/tmp/result.json"
 
