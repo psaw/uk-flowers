@@ -24,6 +24,7 @@
 /docs/*
 /mlruns/*
 /outputs/*
+/reports/
 !**/.gitkeep
 
 # Python

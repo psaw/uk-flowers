@@ -1,0 +1,23 @@
+on:
+  push:
+    - workflows: [pilot-checks]
+      filter:
+        branches: [main, "poc/**", "ai/**"]
+  pull_request:
+    - workflows: [pilot-checks]
+      filter:
+        target_branches: main
+
+workflows:
+  pilot-checks:
+    tasks:
+      - name: python-checks
+        cubes:
+          - name: bootstrap-and-verify
+            image: docker.io/library/python:3.13-slim-bookworm
+            script:
+              - python -m pip install --no-cache-dir uv==0.13.1
+              - bash scripts/pilot-check.sh all
+            artifacts:
+              paths:
+                - reports/pilot
