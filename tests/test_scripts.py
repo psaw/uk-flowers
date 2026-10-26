@@ -1,5 +1,7 @@
 # %% IMPORTS
 
+from __future__ import annotations
+
 import sys
 from unittest import mock
 from pathlib import Path
